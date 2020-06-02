@@ -10,7 +10,7 @@ socketio = SocketIO(app)
 
 users = []
 
-channels = []
+channels = ['General']
 
 @app.route("/", methods=['POST', 'GET'])
 def index():
@@ -27,9 +27,29 @@ def yourchannels():
     return render_template('yourchannels.html')
 
 @socketio.on('addchannel')
-def add(data):
+def add(data, methods=['POST', 'GET']):
     channel = data["channel"]
     print(channel)
-    #channels.append(channel)
-    emit("channel added", {"channel": channel})
-    print('doing stuff')
+    if channel not in channels:
+        channels.append(channel)
+        emit("channel added", {"channel": channel}, broadcast=True)
+        print('channel added')
+    elif channel in channels:
+        print('error: channel exists')
+        emit("nochan")
+
+@app.route('/channel')
+def channel():
+    return render_template('channel.html')
+
+@socketio.on('enter')
+def enter(data, methods=['POST', 'GET']):
+    chan = data["chan"]
+    print('entering ' + chan)
+
+
+
+
+
+if __name__ == '__main__':
+    socketio.run(app)
