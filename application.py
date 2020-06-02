@@ -27,8 +27,9 @@ def yourchannels():
     return render_template('yourchannels.html')
 
 @socketio.on('addchannel')
-def add(channel, methods=['POST', 'GET']):
-    channel = channel
-    print('adding channel..')
-    channels.append(channel)
-    emit('channeladded', channel)
+def add(data):
+    channel = data["channel"]
+    print(channel)
+    #channels.append(channel)
+    emit("channel added", {"channel": channel})
+    print('doing stuff')
