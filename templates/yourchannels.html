@@ -4,16 +4,16 @@
     Hello, {{ username }} <br>
 
     Create a channel below: <br>
-    <form action="" id='adds'method="post">
+    <form action="" id='adds' method="post">
       <input type="text" class="disp" id="chaname" VALUE='User01'placeholder='Channel Name'> <br>
-      <button type="submit" class="buttons"><i class="ics fas fa-plus"></i></button>
+      <button type="submit" class="buttons" onclick="add()"><i class="ics fas fa-plus"></i></button>
     </form>
     <hr>
     or join an existing channel:
 
     <div class="channels">
       <ul id='chans'>
-        <li><a class='nav' href="channels=general" data-page='General'>General</a></li>
+        <li><a class='nav' onclick="enter()"href="channels=General" data-page='General'>General</a></li>
       </ul>
 
     </div>

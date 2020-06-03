@@ -2,13 +2,13 @@
   {% block body %}
   Channel Name
 
-  <div class="chat">
+  <div id="chat">
 
   </div>
 
 
   <form id="message" action="" method="post">
-    <input type="text" value="test" id="in">
-    <button type="submit">Sends</button>
+    <textarea name="name" rows="4" id="in"cols="40"></textarea>
+    <button class="buttons"type="submit"onclick="send()">Send</button>
   </form>
   {% endblock %}

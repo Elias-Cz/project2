@@ -17,6 +17,7 @@ def index():
     if request.method == 'POST':
         username = request.form.get('username')
         users.append(username)
+        socketio.emit("log", {"username": username})
         return redirect('/channels')
     return render_template('index.html')
 
@@ -24,7 +25,6 @@ def index():
 @app.route("/channels", methods=['POST', 'GET'])
 def yourchannels():
     print('entered channel list')
-    socketio.emit('init')
     return render_template('yourchannels.html')
 
 @socketio.on('addchannel')
@@ -34,7 +34,7 @@ def add(data, methods=['POST', 'GET']):
     if channel not in channels:
         channels.append(channel)
         emit("channel added", {"channel": channel}, broadcast=True)
-        print('channel added')
+        print('channel has been added')
     elif channel in channels:
         print('error: channel exists')
         emit("nochan")
@@ -48,6 +48,12 @@ def channel(chan):
 def enter(data, methods=['POST', 'GET']):
     chan = data["chan"]
     print('entering ' + chan)
+
+@socketio.on('message')
+def message(data, methods=['POST', 'GET']):
+    message = data["message"]
+    print('somestuff')
+    emit('mes', {"message": message}, broadcast=True)
 
 
 
