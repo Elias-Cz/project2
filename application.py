@@ -49,6 +49,10 @@ def enter(data, methods=['POST', 'GET']):
     chan = data["chan"]
     print('entering ' + chan)
 
+@socketio.on('stuff')
+def stuff():
+    print('stuff')
+
 
 
 if __name__ == '__main__':
