@@ -7,6 +7,7 @@ function addChannel() {
     };
   }
 
+
   // enter channel
 function enter(){
     document.querySelectorAll('.nav').forEach(link => {
