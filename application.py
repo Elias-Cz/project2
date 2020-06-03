@@ -24,6 +24,7 @@ def index():
 @app.route("/channels", methods=['POST', 'GET'])
 def yourchannels():
     print('entered channel list')
+    socketio.emit('init')
     return render_template('yourchannels.html')
 
 @socketio.on('addchannel')
@@ -38,16 +39,15 @@ def add(data, methods=['POST', 'GET']):
         print('error: channel exists')
         emit("nochan")
 
-@app.route('/channel')
-def channel():
+@app.route('/channels=<chan>', methods=['POST', 'GET'])
+def channel(chan):
+    print('in channel ' + chan)
     return render_template('channel.html')
 
 @socketio.on('enter')
 def enter(data, methods=['POST', 'GET']):
     chan = data["chan"]
     print('entering ' + chan)
-
-
 
 
 

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
   {% block body %}
-    Hello, user <br>
+    Hello, {{ username }} <br>
 
     Create a channel below: <br>
     <form action="" id='adds'method="post">
@@ -13,8 +13,9 @@
 
     <div class="channels">
       <ul id='chans'>
-        <li><a class='nav' href='/channel/<chan>' data-page='General'>General</a></li>
+        <li><a class='nav' href="channels=general" data-page='General'>General</a></li>
       </ul>
 
     </div>
+
   {% endblock %}
