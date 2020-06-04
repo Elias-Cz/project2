@@ -9,23 +9,42 @@ function add() {
   };
 }
 
+// Remember user
+function usn() {
+    const username = document.querySelector('#user').value
+    localStorage.setItem('currentuser', JSON.stringify(username));
+    return false
+}
+
+
 // Sets up link per channel, enter on click
-function enter() {
+function enter(event) {
   document.querySelectorAll('.nav').forEach(link => {
     link.onclick = () => {
-      chan = link.dataset.page;
-      socket.emit('enter', {'chan': chan});
+      var chan = link.dataset.page;
+      localStorage.setItem('chan', JSON.stringify(chan))
+      const username = localStorage.getItem('currentuser')
+      socket.emit('enter', {'chan': chan, 'username': username});
       console.log(chan);
       return false;
     };
   });
 };
 
+// Leaving a room
+function leave() {
+  var chan = localStorage.getItem('chan')
+  const username = localStorage.getItem('currentuser')
+  window.history.back()
+  socket.emit('leave', {'chan': chan, 'username': username})
+}
+
 // Sending message
 function send() {
   document.querySelector('#message').onsubmit = () => {
+    var chan = localStorage.getItem('chan')
     var message = document.querySelector('#in').value;
-    socket.emit('message', {'message': message})
+    socket.emit('message', {'message': message, 'chan': chan})
     return false
 
   };
@@ -51,20 +70,16 @@ document.addEventListener('DOMContentLoaded', () => {
     alert('Error: Channel already exists');
   });
 
-  socket.on('log', data => {
-    var username = data.username
-    localStorage.setItem('user', username)
-  })
 
   // Broadcasting message
   socket.on('mes', data => {
     var message = data.message
-    var name = localStorage.getItem('user')
+    const name = localStorage.getItem('currentuser')
     const div = document.createElement('div');
     var d = new Date();
-    var e = d.getHours() + ':' + d.getMinutes();
+    var time = d.getHours() + ':' + d.getMinutes();
     div.className = "msg";
-    div.innerHTML = message + `<br><small>from: ${name} at: ${e}</small>`;
+    div.innerHTML = message + `<br><small>from: ${name} at: ${time}</small>`;
     document.querySelector('#chat').append(div);
   })
 
