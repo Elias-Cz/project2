@@ -1,87 +1,60 @@
-var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-
-// Begins adding channel, gets name, sends to server as conf
-function add() {
-  document.querySelector('#adds').onsubmit = () => {
-    const channel = document.querySelector('#chaname').value
-    socket.emit('addchannel', {'channel': channel});
-    return false
-  };
-}
-
-// Remember user
-function usn() {
-    const username = document.querySelector('#user').value
-    localStorage.setItem('currentuser', JSON.stringify(username));
-    return false
-}
 
 
-// Sets up link per channel, enter on click
-function enter(event) {
-  document.querySelectorAll('.nav').forEach(link => {
-    link.onclick = () => {
-      var chan = link.dataset.page;
-      localStorage.setItem('chan', JSON.stringify(chan))
-      const username = localStorage.getItem('currentuser')
-      socket.emit('enter', {'chan': chan, 'username': username});
-      console.log(chan);
-      return false;
-    };
-  });
-};
 
-// Leaving a room
-function leave() {
-  var chan = localStorage.getItem('chan')
-  const username = localStorage.getItem('currentuser')
-  window.history.back()
-  socket.emit('leave', {'chan': chan, 'username': username})
-}
-
-// Sending message
-function send() {
-  document.querySelector('#message').onsubmit = () => {
-    var chan = localStorage.getItem('chan')
-    var message = document.querySelector('#in').value;
-    socket.emit('message', {'message': message, 'chan': chan})
-    return false
-
-  };
-};
 
 document.addEventListener('DOMContentLoaded', () => {
-   var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-   // Connect conf
-   socket.on('connect', () => {
-     console.log('connected')
-  });
+var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
-  // After conf, edits list of channels
-  socket.on('channel added', data => {
-    const li = document.createElement('li');
-    li.innerHTML = `<a class='nav' href='channels=${data.channel}' data-page='${data.channel}'>${data.channel}</a>`;
-    document.querySelector('#chans').append(li);
+  // logging the user in + saving to localStorage
+  const log = document.getElementById('log')
+  if (!log){
+  } else {
+  log.addEventListener('submit', () => {
+    const username = document.querySelector('#user').value
+    localStorage.setItem('currentuser', username)
+    console.log(username)
+    socket.emit('logged in', {'username': username})
+    //window.location = '/channels'
+    document.querySelector('#user').value = "";
     return false
   });
+};
+  // end log block
 
-  // If channel exists in channels
-  socket.on('nochan', () => {
-    alert('Error: Channel already exists');
-  });
+  // adding a channel
+  const chan = document.getElementById('adds')
+  if (!chan) {
+  } else {
+    chan.addEventListener('submit', () => {
+      const channel = document.querySelector('#chaname').value;
+      socket.emit('check', {'channel': channel})
+    })
+  }
 
-
-  // Broadcasting message
-  socket.on('mes', data => {
-    var message = data.message
-    const name = localStorage.getItem('currentuser')
-    const div = document.createElement('div');
-    var d = new Date();
-    var time = d.getHours() + ':' + d.getMinutes();
-    div.className = "msg";
-    div.innerHTML = message + `<br><small>from: ${name} at: ${time}</small>`;
-    document.querySelector('#chat').append(div);
+  // if channel exists
+  socket.on('exists', () => {
+    alert('Channel name taken')
   })
+
+  // entering a channel
+  const rooms = document.getElementById('chans')
+  if (!rooms){
+  } else {
+    document.querySelectorAll('.nav').forEach(link => {
+      link.onclick = () => {
+        const room = link.innerHTML;
+        localStorage.setItem('currentchannel', room)
+        const username = localStorage.getItem('currentuser')
+        socket.emit('enter', {'chan': chan, 'username': username});
+        console.log(room);
+      }
+    });
+  }
+
+
+  // clear channel then reinsate user
+
+  // socketon message responds to send from python (room)
 
   // end dont get rid of this pls ffs
 });

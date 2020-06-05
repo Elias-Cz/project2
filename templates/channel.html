@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
   {% block body %}
-  Channel Name <br><a href="/channels" onclick = "leave()"><small>leave</small></a>
+  {{ room }}
+ <br><a href="/channels"><small>leave</small></a>
 
   <div id="chat">
 
@@ -8,7 +9,7 @@
 
 
   <form id="message" action="" method="post">
-    <textarea name="name" rows="4" id="in"cols="40"></textarea>
-    <button class="buttons"type="submit"onclick="send()">Send</button>
+    <textarea name="name" rows="4" id="in"cols="40"required></textarea>
+    <button class="buttons"type="submit">Send</button>
   </form>
   {% endblock %}
