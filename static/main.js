@@ -1,25 +1,64 @@
-
-
-
-
 document.addEventListener('DOMContentLoaded', () => {
 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
 
-  // logging the user in + saving to localStorage
-  const log = document.getElementById('log')
-  if (!log){
-  } else {
-  log.addEventListener('submit', () => {
-    const username = document.querySelector('#user').value
-    localStorage.setItem('currentuser', username)
-    console.log(username)
-    socket.emit('logged in', {'username': username})
-    //window.location = '/channels'
-    document.querySelector('#user').value = "";
-    return false
-  });
-};
+  socket.on('connect', () => {
+    if (!localStorage.getItem('currentuser')){
+    const username = prompt('Enter a username: ')
+    if(username != null) {
+      localStorage.setItem('currentuser', username)
+      console.log('new user ' + username)
+      socket.emit('logged in', {'username': username})
+    } else {
+      console.log('welcome back')
+      }
+    }
+  })
   // end log block
+
+  // new channel
+  const new_channel = document.getElementById('create')
+  if (!new_channel){
+  } else {
+    new_channel.onclick = () => {
+      const channel = prompt('Enter a channel name:')
+      socket.emit('check', {'channel': channel})
+      return false
+    }
+  }
+
+  // if channel exists
+  socket.on('exists', () => {
+    alert('Channel name taken')
+  })
+
+  socket.on('channel added', data => {
+    const list = document.querySelector('#chans')
+    const li = document.createElement('li')
+    li.innerHTML = `<li><a class='nav' href="" name='${data.channel}'>${data.channel}</a></li>`
+    list.append(li)
+  })
+
+  // entering a channel
+  const rooms = document.getElementById('chans')
+  if (!rooms){
+  } else {
+    document.querySelectorAll('.nav').forEach(link => {
+      link.onclick = () => {
+        const username = localStorage.getItem('currentuser')
+        var old_room = localStorage.getItem('currentchannel')
+        socket.emit('leave', {'old_room': old_room, 'username': username})
+        document.getElementById('chat').value = "";
+        const room = link.innerHTML;
+        localStorage.clear();
+        localStorage.setItem('currentchannel', room)
+        localStorage.setItem('currentuser', username)
+        socket.emit('join', {'room': room, 'username': username});
+        console.log('joining ' + room);
+        return false
+      }
+    });
+  }
+
 
   // adding a channel
   const chan = document.getElementById('adds')
@@ -36,35 +75,6 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
     alert('Channel name taken')
   })
 
-  // entering a channel
-  const rooms = document.getElementById('chans')
-  if (!rooms){
-  } else {
-    document.querySelectorAll('.nav').forEach(link => {
-      link.onclick = () => {
-        const room = link.innerHTML;
-        localStorage.setItem('currentchannel', room)
-        const username = localStorage.getItem('currentuser')
-        socket.emit('join', {'room': room, 'username': username});
-        console.log(room);
-      }
-    });
-  }
-
-
-  // remember user on leave
-  const leave = document.getElementById('leave')
-  if (!leave){
-  } else {
-    leave.onclick = () => {
-      socket.emit('leave')
-      const username = localStorage.getItem('currentuser')
-      const room = localStorage.getItem('currentchannel')
-      socket.emit('leave', {'room': room, 'username': username})
-      localStorage.clear()
-      localStorage.setItem('currentuser', username)
-    }
-  }
 
   const send = document.getElementById('button')
   if (!send){
@@ -77,16 +87,36 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
     }
   }
 
-  socket.on('message', data => {
-    console.log(data)
-   })
+  socket.on('message', username => {
+    const div = document.createElement('div');
+    div.innerHTML = `${username}`;
+    div.className = 'msg';
+    const chat = document.querySelector('#chat')
+    chat.append(div);
+    chat.scrollTop = chat.scrollHeight;
 
-  socket.on('sent', data => {
+  });
+
+
+  socket.on('response', data => {
     const div = document.createElement('div')
     div.innerHTML = data.message
     div.className = 'msg'
     document.querySelector('#chat').append(div);
   })
+
+
+
+
+//  const username = localStorage.getItem('currentuser')
+//  const room = localStorage.getItem('currentchannel')
+//  socket.emit('leave', {'room': room, 'username': username})
+//  localStorage.clear()
+//  localStorage.setItem('currentuser', username)
+
+
+
+
 
 
 

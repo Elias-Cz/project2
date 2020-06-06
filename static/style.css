@@ -55,8 +55,8 @@ hr {
   display: inline-block;
   text-align: center;
   border: lightgrey;
-  height: 250px;
-  width: 200px;
+  height: 100px;
+  width: 350px;
   overflow: auto;
 }
 
@@ -68,11 +68,11 @@ hr {
 }
 
 .cent {
-  margin-top: 25%;
+  margin-top: 40px;
   border-radius: 20px 20px 20px 20px;
   padding: 10px;
   background-color: #36454F;
-  height: 550px;
+  height: 800px;
   width: 400px;
   display: inline-block;
   text-align: center;
@@ -102,6 +102,7 @@ hr {
 }
 
 .buttons {
+  margin: 40px;
   border: none;
   cursor: pointer;
   background-color: #a9a9a9;

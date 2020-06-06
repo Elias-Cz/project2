@@ -15,7 +15,7 @@ channels = ['General']
 
 @app.route("/", methods=['POST', 'GET'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html', channels=channels)
 
 @socketio.on('logged in')
 def log(data):
@@ -45,28 +45,23 @@ def join(data):
     room = data["room"]
     username = data["username"]
     join_room(room)
-    print(room)
+    print('in ' + room)
     send(username + ' has joined', room=room)
-
-@app.route("/<room>", methods=["POST", "GET"])
-def channel(room):
-    print( 'in channel ' + room)
-    return render_template('channel.html')
-
 
 @socketio.on('r_send')
 def r_send(data):
     room = data["room"]
-    #print('message in ' + room)
-    print(room)
-    send(data, room=room)
+    print('message in ' + room)
+    emit('response', data, room=room)
 
 @socketio.on('leave')
 def leave(data):
-    room = data["room"]
+    room = data["old_room"]
+    username = data["username"]
     leave_room(room)
-    print('left')
+    print(username + ' left')
     send('a user has left the room', room=room)
+    
 
 
 if __name__ == '__main__':

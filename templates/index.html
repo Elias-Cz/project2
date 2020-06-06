@@ -1,15 +1,26 @@
 {% extends "layout.html" %}
 
   {% block body %}
-  <div id="ti">
-    Flack
-  </div>   <br>
-    <i class="fas fa-comments fa-6x"></i>
-    <hr>
+  FLACK
+ <br><a id="create" href=""><small>New Channel</small></a>
 
-    <form class="login" action="/channels" id="log" method="POST">
-      <label for="login"> Enter a display name:</label><br>
-      <input type="text" name='username'class='disp' id="user" placeholder="Display Name"required><br>
-      <button type="submit" class='buttons'>Submit</button>
-    </form>
+ <div class="channels">
+   <ul id="chans">
+     {% for channels in channels %}
+      <li><a class='nav' href="" name='{{ channels }}'>{{ channels }}</a></li>
+     {% endfor %}
+   </ul>
+
+ </div>
+ <p id="title"></p>
+  <div id="chat">
+
+  </div>
+
+
+  <form id="message" action="" method="post">
+    <textarea name="name" rows="6" id="in"cols="40"required></textarea>
+    <button class="buttons"id="button"type="submit">Send</button>
+  </form>
+
   {% endblock %}
