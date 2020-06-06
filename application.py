@@ -40,10 +40,33 @@ def check(data):
         print('error: channel exists')
         emit("exists")
 
-@app.route("/channels=<room>", methods=["POST", "GET"])
+@socketio.on('join')
+def join(data):
+    room = data["room"]
+    username = data["username"]
+    join_room(room)
+    print(room)
+    send(username + ' has joined', room=room)
+
+@app.route("/<room>", methods=["POST", "GET"])
 def channel(room):
-    print('in channel ' + room)
+    print( 'in channel ' + room)
     return render_template('channel.html')
+
+
+@socketio.on('r_send')
+def r_send(data):
+    room = data["room"]
+    #print('message in ' + room)
+    print(room)
+    send(data, room=room)
+
+@socketio.on('leave')
+def leave(data):
+    room = data["room"]
+    leave_room(room)
+    print('left')
+    send('a user has left the room', room=room)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
   {% block body %}
   {{ room }}
- <br><a href="/channels"><small>leave</small></a>
+ <br><a id="leave" href="/channels"><small>leave</small></a>
 
   <div id="chat">
 
@@ -10,6 +10,6 @@
 
   <form id="message" action="" method="post">
     <textarea name="name" rows="4" id="in"cols="40"required></textarea>
-    <button class="buttons"type="submit">Send</button>
+    <button class="buttons"id="button"type="submit">Send</button>
   </form>
   {% endblock %}
