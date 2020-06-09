@@ -9,9 +9,14 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
       console.log('new user ' + username)
       socket.emit('logged in', {'username': username})
     } else {
-      console.log('welcome back')
-      }
+      alert('Please enter a valid username')
     }
+    } else {
+      console.log('welcome back')
+      const username = localStorage.getItem('currentuser')
+      const room = localStorage.getItem('currentchannel')
+      socket.emit('join', {'room': room, 'username': username})
+      }
   })
   // end log block
 
@@ -92,17 +97,17 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
   }
 
   socket.on('message', username => {
-    //console.log(msgs)
     const div = document.createElement('div');
     div.innerHTML = `user ${username}`;
     div.className = 'msg';
     const chat = document.querySelector('#chat');
     chat.append(div);
-    chat.scrollTop = chat.scrollHeight;
   });
 
-  socket.on('stuff', data => {
+  // Loads/writes old messages
+  socket.on('old_messages', data => {
     if (data.msgs == "none") {
+      console.log('No old messages')
     } else {
     stuff = data.msgs;
     stuff.forEach(element => {
@@ -112,8 +117,8 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
     const chat = document.querySelector('#chat');
     chat.append(div);
     chat.scrollTop = chat.scrollHeight;
-  });
-}
+      });
+    }
   });
 
 
@@ -123,28 +128,6 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
     div.className = 'msg';
     document.querySelector('#chat').append(div);
   })
-
-
-
-
-//  const username = localStorage.getItem('currentuser')
-//  const room = localStorage.getItem('currentchannel')
-//  socket.emit('leave', {'room': room, 'username': username})
-//  localStorage.clear()
-//  localStorage.setItem('currentuser', username)
-
-
-
-
-
-
-
-
-
-
-  // clear channel then reinsate user
-
-  // socketon message responds to send from python (room)
 
   // end dont get rid of this pls ffs
 });

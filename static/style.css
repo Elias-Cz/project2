@@ -1,11 +1,11 @@
 * {
   font-family:  sans-serif;
 }
-
+/*
 body, html {
   height: 100%;
 }
-
+*/
 hr {
   width: 75%;
 }
@@ -47,6 +47,11 @@ i {
 hr {
   margin-bottom: 30px;
 }
+
+.nav {
+
+}
+
 
 .channels {
   background-color: grey;
@@ -124,6 +129,8 @@ hr {
 }
 
 .msg {
+  text-align: center;
+  word-break: break-all;
   background-color: grey;
   border-radius: 4px 4px 4px 4px;
   margin: 10px;
@@ -131,6 +138,25 @@ hr {
   -webkit-box-shadow: 10px 10px 18px -9px rgba(0,0,0,0.59);
   -moz-box-shadow: 10px 10px 18px -9px rgba(0,0,0,0.59);
   box-shadow: 10px 10px 18px -9px rgba(0,0,0,0.59);
+}
+
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 .msg:hover {

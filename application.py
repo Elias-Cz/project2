@@ -15,21 +15,19 @@ channels = ['General']
 
 messages = {}
 
+# Default route. Ask for display name on connect
 @app.route("/", methods=['POST', 'GET'])
 def index():
     return render_template('index.html', channels=channels)
 
+# Stores username in users
 @socketio.on('logged in')
 def log(data):
     username = data['username']
     users.append(username)
     print('user ' + username + ' registered')
 
-@app.route("/channels", methods=['POST', 'GET'])
-def yourchannels():
-    print('entered channel list')
-    return render_template('yourchannels.html', channels=channels)
-
+# Check if channel already exists in channels
 @socketio.on("check")
 def check(data):
     channel = data["channel"]
@@ -42,6 +40,7 @@ def check(data):
         print('error: channel exists')
         emit("exists")
 
+# Join a room and load existing messages
 @socketio.on('join')
 def join(data):
     room = data["room"]
@@ -51,11 +50,12 @@ def join(data):
     if room in messages:
         msgs = messages[room]
         print(messages[room])
-        emit("stuff", {"username": username, "msgs": msgs}, room=room)
+        emit("old_messages", {"username": username, "msgs": msgs})
     elif room not in messages:
         msgs = "none"
-        emit("stuff", {"msgs": msgs}, room=room)
+        emit("old_messages", {"msgs": msgs})
 
+# Reads data, saves to dict, prints conf, sends back to client
 @socketio.on('r_send')
 def r_send(data):
     time = data["time_hrs"]
@@ -64,16 +64,18 @@ def r_send(data):
     message = data["message"], data["username"], data["time_hrs"]
     print('message from ' + username + ' in ' + room)
     if room in messages:
+        # if the room or channel name exists in the messages dict, append the room dict
         print('not first message')
         messages[room].append(message)
         print(messages[room])
         emit('response', data, room=room)
     elif room not in messages:
+        # if the room does not extist in messages create a new dict for the room, with the message
         messages[room] = [message]
         print('first message')
-        return('not stuff')
         emit('response', data, room=room)
 
+# Leave a room. send() Notifies previous room
 @socketio.on('leave')
 def leave(data):
     room = data["old_room"]
@@ -81,8 +83,6 @@ def leave(data):
     leave_room(room)
     print(username + ' left')
     send('a user has left the room', room=room)
-
-
 
 if __name__ == '__main__':
     socketio.run(app)
