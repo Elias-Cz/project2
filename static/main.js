@@ -47,7 +47,7 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
         const username = localStorage.getItem('currentuser')
         var old_room = localStorage.getItem('currentchannel')
         socket.emit('leave', {'old_room': old_room, 'username': username})
-        document.getElementById('chat').value = "";
+        document.getElementById('chat').innerHTML = '';
         const room = link.innerHTML;
         localStorage.clear();
         localStorage.setItem('currentchannel', room)
@@ -61,12 +61,12 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
 
 
   // adding a channel
-  const chan = document.getElementById('adds')
+  const chan = document.getElementById('adds');
   if (!chan) {
   } else {
     chan.addEventListener('submit', () => {
       const channel = document.querySelector('#chaname').value;
-      socket.emit('check', {'channel': channel})
+      socket.emit('check', {'channel': channel});
     })
   }
 
@@ -81,27 +81,46 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
   } else {
     send.onclick = () => {
       const message = document.querySelector('#in').value;
-      const room = localStorage.getItem('currentchannel')
-      socket.emit('r_send', {'room': room, 'message': message})
+      const username = localStorage.getItem('currentuser');
+      const room = localStorage.getItem('currentchannel');
+      var time = new Date();
+      var time_hrs = time.toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'});
+      socket.emit('r_send', {'time_hrs': time_hrs, 'room': room, 'username': username, 'message': message})
+      document.querySelector('#in').value = '';
       return false
     }
   }
 
   socket.on('message', username => {
+    //console.log(msgs)
     const div = document.createElement('div');
-    div.innerHTML = `${username}`;
+    div.innerHTML = `user ${username}`;
     div.className = 'msg';
-    const chat = document.querySelector('#chat')
+    const chat = document.querySelector('#chat');
     chat.append(div);
     chat.scrollTop = chat.scrollHeight;
+  });
 
+  socket.on('stuff', data => {
+    if (data.msgs == "none") {
+    } else {
+    stuff = data.msgs;
+    stuff.forEach(element => {
+    const div = document.createElement('div');
+    div.innerHTML = `${element[0]} <br><small> from: ${element[1]} at ${element[2]} </small>`;
+    div.className = 'msg';
+    const chat = document.querySelector('#chat');
+    chat.append(div);
+    chat.scrollTop = chat.scrollHeight;
+  });
+}
   });
 
 
   socket.on('response', data => {
-    const div = document.createElement('div')
-    div.innerHTML = data.message
-    div.className = 'msg'
+    const div = document.createElement('div');
+    div.innerHTML = `${data.message} <br><small>from: ${data.username} at: ${data.time_hrs}</small>`
+    div.className = 'msg';
     document.querySelector('#chat').append(div);
   })
 
