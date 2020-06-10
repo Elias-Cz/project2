@@ -9,7 +9,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 app.config["SECRET_KEY"] = "OCML3BRawWEUeaxcuKHLpw"
 socketio = SocketIO(app)
 
-users = []
+users = {}
 
 channels = ['General']
 
@@ -23,9 +23,11 @@ def index():
 # Stores username in users
 @socketio.on('logged in')
 def log(data):
+    sid = request.sid
     username = data['username']
-    users.append(username)
+    users.update({username: sid})
     print('user ' + username + ' registered')
+    print(users)
 
 # Check if channel already exists in channels
 @socketio.on("check")
@@ -83,6 +85,22 @@ def leave(data):
     leave_room(room)
     print(username + ' left')
     send('a user has left the room', room=room)
+
+# Personal Messaging
+@socketio.on('personal_message')
+def personal_message(data):
+    print(request.sid)
+    username = data["target_user"]
+    origin = data["username"]
+    if username in users:
+        print(users[username])
+        sidb = users[origin]
+        sid = users[username]
+        emit('personal_response', data, room=sid)
+        emit('personal_response', data, room=sidb)
+    elif username not in users:
+        print('no')
+        emit('not_found')
 
 if __name__ == '__main__':
     socketio.run(app)

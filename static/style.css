@@ -10,30 +10,28 @@ hr {
   width: 75%;
 }
 */
-
-html {
-  background: linear-gradient(29deg, #dce0df, #000000);
-  background-size: 400% 400%;
-  -webkit-animation: easefx 18s ease infinite;
-  -moz-animation: easefx 18s ease infinite;
-  animation: easefx 18s ease infinite;
-  text-align: center;
+ html {
+    background: linear-gradient(53deg, #5c507c, #afafaf);
+    background-size: 400% 400%;
+    -webkit-animation: AnimationName 16s ease infinite;
+    -moz-animation: AnimationName 16s ease infinite;
+    animation: AnimationName 16s ease infinite;
 }
 
-@-webkit-keyframes easefx {
-    0%{background-position:96% 0%}
-    50%{background-position:5% 100%}
-    100%{background-position:96% 0%}
+@-webkit-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
 }
-@-moz-keyframes easefx {
-    0%{background-position:96% 0%}
-    50%{background-position:5% 100%}
-    100%{background-position:96% 0%}
+@-moz-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
 }
-@keyframes easefx {
-    0%{background-position:96% 0%}
-    50%{background-position:5% 100%}
-    100%{background-position:96% 0%}
+@keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
 }
 
 ::-webkit-scrollbar {
@@ -68,7 +66,7 @@ ul {
   margin: 20px;
   border-radius: 20px 20px 20px 20px;
   padding: 10px;
-  background-color: #36454F;
+  background-color: #ddd;
   -webkit-box-shadow: 26px 26px 34px 8px rgba(0,0,0,0.55);
   -moz-box-shadow: 26px 26px 34px 8px rgba(0,0,0,0.55);
   box-shadow: 26px 26px 34px 8px rgba(0,0,0,0.55);
@@ -89,23 +87,32 @@ ul {
 }
 
 #title1 {
-  color: white;
+  color: black;
   font-size: 20px;
   font-weight: bold;
   margin: 10px;
 }
 
-#chat {
+.in2 {
+  margin-top: 20px;
+  height: 40%;
+}
+
+#chat, #personal_messages {
   overflow: auto;
   text-align: right;
   padding-right: 2px;
   font-size: 15px;
 }
 
+input {
+  margin: 10%;
+}
+
 textarea {
   border-radius: 10px 10px 10px 10px;
   cursor: auto;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.1);
   width: 90%;
 }
 
@@ -132,6 +139,16 @@ textarea:focus {
   background-color: lightgrey;
 }
 
+#title {
+  text-align: center;
+  color: white;
+  font-size: 30px;
+}
+
+hr {
+  max-width: 20%;
+}
+
 .act {
   display: inline-block;
   border: none;
@@ -139,10 +156,9 @@ textarea:focus {
   font-size: 20px;
   text-align: center;
   padding: 8px;
-  color: white;
+  color: black;
   background-color: #a9a9a9;
-  width: 80%;
-  font-weight: bold;
+  width: auto;
 }
 
 .buttons {
@@ -150,7 +166,7 @@ textarea:focus {
   border: none;
   cursor: pointer;
   background-color: #a9a9a9;
-  color: white;
+  color: black;
   border-radius: 10px 10px 10px 10px;
   font-size: 20px;
   text-align: center;

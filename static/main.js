@@ -29,7 +29,6 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
     new_channel.onclick = () => {
       const channel = prompt('Enter a channel name:')
       socket.emit('check', {'channel': channel})
-      return false
     }
   }
 
@@ -40,9 +39,9 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
 
   socket.on('channel added', data => {
     const list = document.querySelector('#chans')
-    const li = document.createElement('li')
-    li.innerHTML = `<br><a class='nav' href="" name='${data.channel}'>${data.channel}</a>`
-    list.append(li)
+    const div = document.createElement('div')
+    div.innerHTML = `<br><a class='nav' href="" name='${data.channel}'>${data.channel}</a>`
+    list.append(div)
   })
 
   // entering a channel
@@ -112,7 +111,7 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
     if (data.msgs == "none") {
       console.log('No old messages')
     } else {
-    stuff = data.msgs;
+    const stuff = data.msgs;
     stuff.forEach(element => {
     const div = document.createElement('div');
     div.innerHTML = `${element[0]} <br><small> from: ${element[1]} at ${element[2]} </small>`;
@@ -132,6 +131,50 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
     document.querySelector('#chat').append(div);
     chat.scrollTop = chat.scrollHeight;
   })
+
+  // Personal Messaging
+  const personal_message = document.getElementById('button2')
+  if (!personal_message){
+  } else {
+    personal_message.onclick = () => {
+      const target_user = document.querySelector('#pm').value;
+      const username = localStorage.getItem('currentuser');
+      const message = document.querySelector('#in2').value
+      var time = new Date();
+      var time_hrs = time.toLocaleTimeString(navigator.language, {hour: '2-digit', minute: '2-digit'});
+      socket.emit('personal_message', {'time_hrs': time_hrs, 'username': username, 'message': message, 'target_user': target_user})
+      document.querySelector('#in2').value = '';
+      document.querySelector('#pm').value = '';
+      chat.scrollTop = chat.scrollHeight;
+      return false
+    }
+  }
+
+  socket.on('personal_response', data => {
+    console.log(data)
+    const div = document.createElement('div');
+    div.innerHTML = `${data.message} <br><small>from: ${data.username} at: ${data.time_hrs}</small>`
+    div.className = 'msg';
+    document.querySelector('#personal_messages').append(div);
+    chat.scrollTop = chat.scrollHeight;
+  })
+
+  socket.on('not_found', () => {
+    alert('user not found')
+  })
+
+  const pm_enter = document.getElementById('pm_enter')
+  if (!pm_enter){
+  } else {
+    pm_enter.onclick = () => {
+      const username = localStorage.getItem('currentuser')
+      var old_room = localStorage.getItem('currentchannel')
+      socket.emit('leave', {'old_room': old_room, 'username': username})
+      return false
+    }
+  }
+
+
 
   // end dont get rid of this pls ffs
 });
