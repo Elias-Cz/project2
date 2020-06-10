@@ -10,11 +10,13 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
       socket.emit('logged in', {'username': username})
     } else {
       alert('Please enter a valid username')
+      location.reload()
     }
     } else {
       console.log('welcome back')
       const username = localStorage.getItem('currentuser')
       const room = localStorage.getItem('currentchannel')
+      document.getElementById('current').innerHTML = room
       socket.emit('join', {'room': room, 'username': username})
       }
   })
@@ -39,7 +41,7 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
   socket.on('channel added', data => {
     const list = document.querySelector('#chans')
     const li = document.createElement('li')
-    li.innerHTML = `<li><a class='nav' href="" name='${data.channel}'>${data.channel}</a></li>`
+    li.innerHTML = `<br><a class='nav' href="" name='${data.channel}'>${data.channel}</a>`
     list.append(li)
   })
 
@@ -54,6 +56,7 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
         socket.emit('leave', {'old_room': old_room, 'username': username})
         document.getElementById('chat').innerHTML = '';
         const room = link.innerHTML;
+        document.getElementById('current').innerHTML = room
         localStorage.clear();
         localStorage.setItem('currentchannel', room)
         localStorage.setItem('currentuser', username)
@@ -127,6 +130,7 @@ var socket = io.connect(location.protocol + '//' + document.domain + ':' + locat
     div.innerHTML = `${data.message} <br><small>from: ${data.username} at: ${data.time_hrs}</small>`
     div.className = 'msg';
     document.querySelector('#chat').append(div);
+    chat.scrollTop = chat.scrollHeight;
   })
 
   // end dont get rid of this pls ffs
