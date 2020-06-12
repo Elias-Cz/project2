@@ -67,10 +67,11 @@ def r_send(data):
     print('message from ' + username + ' in ' + room)
     if room in messages:
         # if the room or channel name exists in the messages dict, append the room dict
-        print('not first message')
         messages[room].append(message)
-        print(messages[room])
         emit('response', data, room=room)
+        if len(messages[room]) > 100:
+            messages[room].pop(0)
+            print('Max dict length')
     elif room not in messages:
         # if the room does not extist in messages create a new dict for the room, with the message
         messages[room] = [message]
@@ -86,21 +87,10 @@ def leave(data):
     print(username + ' left')
     send('a user has left the room', room=room)
 
-# Personal Messaging
-@socketio.on('personal_message')
-def personal_message(data):
-    print(request.sid)
-    username = data["target_user"]
-    origin = data["username"]
-    if username in users:
-        print(users[username])
-        sidb = users[origin]
-        sid = users[username]
-        emit('personal_response', data, room=sid)
-        emit('personal_response', data, room=sidb)
-    elif username not in users:
-        print('no')
-        emit('not_found')
+@socketio.on('user_stat')
+def status(data):
+    print('Status Posted')
+    emit('post_status', data, broadcast=True)
 
 if __name__ == '__main__':
     socketio.run(app)

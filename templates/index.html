@@ -25,22 +25,26 @@
     </div>
     <div id="text">
     <form id="message" action="" method="post">
-      <textarea name="name" rows="6" id="in"cols="40"required></textarea>
+      <textarea name="name" rows="6" id="in"cols="40"value="numebr"required></textarea>
       <button class="buttons"id="button"type="submit">Send</button>
     </form>
 
     </div>
   </div>
   <div class="channels">
-    <a href="" id="pm_enter">Personal Messages</a>
-    <div class="inner in2" id="personal_messages">
-    </div>
-    <form class="" action="" method="post">
-      <input type="text" id="pm" placeholder="To User"required>
-      <textarea name="name" rows="6" id="in2"cols="40"required></textarea>
-      <button class="buttons"id="button2"type="submit">Send</button>
-    </form>
+    <p>Status:</p>
+  <div class="inner in2" id="status">
   </div>
+  <form class="" action="" method="post">
+    <select class="status" id="stat" name="Status">
+      <option value=""Disabled selected>Select a status</option>
+      <option value="Online">Online</option>
+      <option value="Offline">Offline</option>
+      <option value="AFK">AFK</option>
+    </select><br>
+    <button class="buttons"id="button2"type="submit">Post</button>
+  </form>
+</div>
 
 
   {% endblock %}

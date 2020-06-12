@@ -1,5 +1,6 @@
 * {
   font-family:  sans-serif;
+  scroll-behavior: smooth;
 }
 /*
 body, html {
@@ -79,6 +80,7 @@ ul {
   height: 300px;
   width: 90%;
   margin: 15px;
+  overflow: auto;
 }
 
 .nav {
@@ -98,7 +100,7 @@ ul {
   height: 40%;
 }
 
-#chat, #personal_messages {
+#chat, #status {
   overflow: auto;
   text-align: right;
   padding-right: 2px;
